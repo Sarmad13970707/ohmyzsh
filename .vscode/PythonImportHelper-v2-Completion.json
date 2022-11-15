@@ -1,0 +1,561 @@
+[
+    {
+        "label": "sys",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "sys",
+        "description": "sys",
+        "detail": "sys",
+        "documentation": {}
+    },
+    {
+        "label": "itertools",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "itertools",
+        "description": "itertools",
+        "detail": "itertools",
+        "documentation": {}
+    },
+    {
+        "label": "termcolor",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "termcolor",
+        "description": "termcolor",
+        "detail": "termcolor",
+        "documentation": {}
+    },
+    {
+        "label": "print_function",
+        "importPath": "__future__",
+        "description": "__future__",
+        "isExtraImport": true,
+        "detail": "__future__",
+        "documentation": {}
+    },
+    {
+        "label": "print_function",
+        "importPath": "__future__",
+        "description": "__future__",
+        "isExtraImport": true,
+        "detail": "__future__",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "re",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "re",
+        "description": "re",
+        "detail": "re",
+        "documentation": {}
+    },
+    {
+        "label": "json",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "json",
+        "description": "json",
+        "detail": "json",
+        "documentation": {}
+    },
+    {
+        "label": "subprocess",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "subprocess",
+        "description": "subprocess",
+        "detail": "subprocess",
+        "documentation": {}
+    },
+    {
+        "label": "Popen",
+        "importPath": "subprocess",
+        "description": "subprocess",
+        "isExtraImport": true,
+        "detail": "subprocess",
+        "documentation": {}
+    },
+    {
+        "label": "PIPE",
+        "importPath": "subprocess",
+        "description": "subprocess",
+        "isExtraImport": true,
+        "detail": "subprocess",
+        "documentation": {}
+    },
+    {
+        "label": "check_output",
+        "importPath": "subprocess",
+        "description": "subprocess",
+        "isExtraImport": true,
+        "detail": "subprocess",
+        "documentation": {}
+    },
+    {
+        "label": "check_output",
+        "importPath": "subprocess",
+        "description": "subprocess",
+        "isExtraImport": true,
+        "detail": "subprocess",
+        "documentation": {}
+    },
+    {
+        "label": "list2cmdline",
+        "importPath": "subprocess",
+        "description": "subprocess",
+        "isExtraImport": true,
+        "detail": "subprocess",
+        "documentation": {}
+    },
+    {
+        "label": "urlparse",
+        "importPath": "urllib.parse",
+        "description": "urllib.parse",
+        "isExtraImport": true,
+        "detail": "urllib.parse",
+        "documentation": {}
+    },
+    {
+        "label": "parse",
+        "kind": 2,
+        "importPath": "plugins.aliases.cheatsheet",
+        "description": "plugins.aliases.cheatsheet",
+        "peekOfCode": "def parse(line):\n    left = line[0:line.find('=')].strip()\n    right = line[line.find('=')+1:].strip('\\'\"\\n ')\n    try:\n        cmd = next(part for part in right.split() if len([char for char in '=<>' if char in part])==0)\n    except StopIteration:\n        cmd = right\n    return (left, right, cmd)\ndef cheatsheet(lines):\n    exps = [ parse(line) for line in lines ]",
+        "detail": "plugins.aliases.cheatsheet",
+        "documentation": {}
+    },
+    {
+        "label": "cheatsheet",
+        "kind": 2,
+        "importPath": "plugins.aliases.cheatsheet",
+        "description": "plugins.aliases.cheatsheet",
+        "peekOfCode": "def cheatsheet(lines):\n    exps = [ parse(line) for line in lines ]\n    cheatsheet = {'_default': []}\n    for key, group in itertools.groupby(exps, lambda exp:exp[2]):\n        group_list = [ item for item in group ]\n        if len(group_list)==1:\n            target_aliases = cheatsheet['_default']\n        else:\n            if key not in cheatsheet:\n                cheatsheet[key] = []",
+        "detail": "plugins.aliases.cheatsheet",
+        "documentation": {}
+    },
+    {
+        "label": "pretty_print_group",
+        "kind": 2,
+        "importPath": "plugins.aliases.cheatsheet",
+        "description": "plugins.aliases.cheatsheet",
+        "peekOfCode": "def pretty_print_group(key, aliases, highlight=None):\n    if len(aliases) == 0:\n        return\n    group_hl_formatter = lambda g, hl: termcolor.colored(hl, 'yellow').join([termcolor.colored(part, 'red') for part in ('[%s]' % g).split(hl)])\n    alias_hl_formatter = lambda alias, hl: termcolor.colored(hl, 'yellow').join([termcolor.colored(part, 'green') for part in ('\\t%s = %s' % alias[0:2]).split(hl)])\n    group_formatter = lambda g: termcolor.colored('[%s]' % g, 'red')\n    alias_formatter = lambda alias: termcolor.colored('\\t%s = %s' % alias[0:2], 'green')\n    if highlight and len(highlight)>0:\n        print (group_hl_formatter(key, highlight))\n        print ('\\n'.join([alias_hl_formatter(alias, highlight) for alias in aliases]))",
+        "detail": "plugins.aliases.cheatsheet",
+        "documentation": {}
+    },
+    {
+        "label": "pretty_print",
+        "kind": 2,
+        "importPath": "plugins.aliases.cheatsheet",
+        "description": "plugins.aliases.cheatsheet",
+        "peekOfCode": "def pretty_print(cheatsheet, wfilter):\n    sorted_key = sorted(cheatsheet.keys())\n    for key in sorted_key:\n        aliases = cheatsheet.get(key)\n        if not wfilter:\n            pretty_print_group(key, aliases, wfilter)\n        else:\n            pretty_print_group(key, [ alias for alias in aliases if alias[0].find(wfilter)>-1 or alias[1].find(wfilter)>-1], wfilter)\nif __name__ == '__main__':\n    lines = sys.stdin.readlines()",
+        "detail": "plugins.aliases.cheatsheet",
+        "documentation": {}
+    },
+    {
+        "label": "colored",
+        "kind": 2,
+        "importPath": "plugins.aliases.termcolor",
+        "description": "plugins.aliases.termcolor",
+        "peekOfCode": "def colored(text, color=None, on_color=None, attrs=None):\n    \"\"\"Colorize text.\n    Available text colors:\n        red, green, yellow, blue, magenta, cyan, white.\n    Available text highlights:\n        on_red, on_green, on_yellow, on_blue, on_magenta, on_cyan, on_white.\n    Available attributes:\n        bold, dark, underline, blink, reverse, concealed.\n    Example:\n        colored('Hello, World!', 'red', 'on_grey', ['blue', 'blink'])",
+        "detail": "plugins.aliases.termcolor",
+        "documentation": {}
+    },
+    {
+        "label": "cprint",
+        "kind": 2,
+        "importPath": "plugins.aliases.termcolor",
+        "description": "plugins.aliases.termcolor",
+        "peekOfCode": "def cprint(text, color=None, on_color=None, attrs=None, **kwargs):\n    \"\"\"Print colorize text.\n    It accepts arguments of print function.\n    \"\"\"\n    print((colored(text, color, on_color, attrs)), **kwargs)\nif __name__ == '__main__':\n    print('Current terminal type: %s' % os.getenv('TERM'))\n    print('Test basic colors:')\n    cprint('Grey color', 'grey')\n    cprint('Red color', 'red')",
+        "detail": "plugins.aliases.termcolor",
+        "documentation": {}
+    },
+    {
+        "label": "__ALL__",
+        "kind": 5,
+        "importPath": "plugins.aliases.termcolor",
+        "description": "plugins.aliases.termcolor",
+        "peekOfCode": "__ALL__ = [ 'colored', 'cprint' ]\nVERSION = (1, 1, 0)\nATTRIBUTES = dict(\n        list(zip([\n            'bold',\n            'dark',\n            '',\n            'underline',\n            'blink',\n            '',",
+        "detail": "plugins.aliases.termcolor",
+        "documentation": {}
+    },
+    {
+        "label": "VERSION",
+        "kind": 5,
+        "importPath": "plugins.aliases.termcolor",
+        "description": "plugins.aliases.termcolor",
+        "peekOfCode": "VERSION = (1, 1, 0)\nATTRIBUTES = dict(\n        list(zip([\n            'bold',\n            'dark',\n            '',\n            'underline',\n            'blink',\n            '',\n            'reverse',",
+        "detail": "plugins.aliases.termcolor",
+        "documentation": {}
+    },
+    {
+        "label": "ATTRIBUTES",
+        "kind": 5,
+        "importPath": "plugins.aliases.termcolor",
+        "description": "plugins.aliases.termcolor",
+        "peekOfCode": "ATTRIBUTES = dict(\n        list(zip([\n            'bold',\n            'dark',\n            '',\n            'underline',\n            'blink',\n            '',\n            'reverse',\n            'concealed'",
+        "detail": "plugins.aliases.termcolor",
+        "documentation": {}
+    },
+    {
+        "label": "HIGHLIGHTS",
+        "kind": 5,
+        "importPath": "plugins.aliases.termcolor",
+        "description": "plugins.aliases.termcolor",
+        "peekOfCode": "HIGHLIGHTS = dict(\n        list(zip([\n            'on_grey',\n            'on_red',\n            'on_green',\n            'on_yellow',\n            'on_blue',\n            'on_magenta',\n            'on_cyan',\n            'on_white'",
+        "detail": "plugins.aliases.termcolor",
+        "documentation": {}
+    },
+    {
+        "label": "COLORS",
+        "kind": 5,
+        "importPath": "plugins.aliases.termcolor",
+        "description": "plugins.aliases.termcolor",
+        "peekOfCode": "COLORS = dict(\n        list(zip([\n            'grey',\n            'red',\n            'green',\n            'yellow',\n            'blue',\n            'magenta',\n            'cyan',\n            'white',",
+        "detail": "plugins.aliases.termcolor",
+        "documentation": {}
+    },
+    {
+        "label": "RESET",
+        "kind": 5,
+        "importPath": "plugins.aliases.termcolor",
+        "description": "plugins.aliases.termcolor",
+        "peekOfCode": "RESET = '\\033[0m'\ndef colored(text, color=None, on_color=None, attrs=None):\n    \"\"\"Colorize text.\n    Available text colors:\n        red, green, yellow, blue, magenta, cyan, white.\n    Available text highlights:\n        on_red, on_green, on_yellow, on_blue, on_magenta, on_cyan, on_white.\n    Available attributes:\n        bold, dark, underline, blink, reverse, concealed.\n    Example:",
+        "detail": "plugins.aliases.termcolor",
+        "documentation": {}
+    },
+    {
+        "label": "code_to_omz",
+        "kind": 2,
+        "importPath": "plugins.emoji.update_emoji",
+        "description": "plugins.emoji.update_emoji",
+        "peekOfCode": "def code_to_omz(_code_points):\n    \"\"\" Returns a ZSH-compatible Unicode string from the code point(s) \"\"\"\n    return r'\\U' + r'\\U'.join(_code_points.split(' '))\ndef name_to_omz(_name, _group, _subgroup, _status):\n    \"\"\" Returns a reasonable snake_case name for the emoji. \"\"\"\n    def snake_case(_string):\n        \"\"\" Does the regex work of snake_case \"\"\"\n        remove_dots = re.sub(r'\\.\\(\\)', r'', _string)\n        replace_ands = re.sub(r'\\&', r'and', remove_dots)\n        remove_whitespace = re.sub(r'[^\\#\\*\\w]', r'_', replace_ands)",
+        "detail": "plugins.emoji.update_emoji",
+        "documentation": {}
+    },
+    {
+        "label": "name_to_omz",
+        "kind": 2,
+        "importPath": "plugins.emoji.update_emoji",
+        "description": "plugins.emoji.update_emoji",
+        "peekOfCode": "def name_to_omz(_name, _group, _subgroup, _status):\n    \"\"\" Returns a reasonable snake_case name for the emoji. \"\"\"\n    def snake_case(_string):\n        \"\"\" Does the regex work of snake_case \"\"\"\n        remove_dots = re.sub(r'\\.\\(\\)', r'', _string)\n        replace_ands = re.sub(r'\\&', r'and', remove_dots)\n        remove_whitespace = re.sub(r'[^\\#\\*\\w]', r'_', replace_ands)\n        return re.sub(r'__', r'_', remove_whitespace)\n    shortname = \"\"\n    split_at_colon = lambda s: s.split(\": \")",
+        "detail": "plugins.emoji.update_emoji",
+        "documentation": {}
+    },
+    {
+        "label": "increment_name",
+        "kind": 2,
+        "importPath": "plugins.emoji.update_emoji",
+        "description": "plugins.emoji.update_emoji",
+        "peekOfCode": "def increment_name(_shortname):\n    \"\"\" Increment the short name by 1. If you get, say,\n    'woman_detective_unqualified', it returns\n    'woman_detective_unqualified_1', and then\n    'woman_detective_unqualified_2', etc. \"\"\"\n    last_char = _shortname[-1]\n    if last_char.isdigit():\n        num = int(last_char)\n        return _shortname[:-1] + str(num + 1)\n    return _shortname + \"_1\"",
+        "detail": "plugins.emoji.update_emoji",
+        "documentation": {}
+    },
+    {
+        "label": "spec",
+        "kind": 5,
+        "importPath": "plugins.emoji.update_emoji",
+        "description": "plugins.emoji.update_emoji",
+        "peekOfCode": "spec = open(\"emoji-data.txt\", \"r\")\n# Regexes\n# regex_emoji will return, respectively:\n# the code points, its type (status), the actual emoji, and its official name\nregex_emoji = r\"^([\\w ].*?\\S)\\s*;\\s*([\\w-]+)\\s*#\\s*(.*?)\\s(\\S.*).*$\"\n# regex_group returns the group of subgroup that a line opens\nregex_group = r\"^#\\s*(group|subgroup):\\s*(.*)$\"\nheaders = \"\"\"\n# emoji-char-definitions.zsh - Emoji definitions for oh-my-zsh emoji plugin\n#",
+        "detail": "plugins.emoji.update_emoji",
+        "documentation": {}
+    },
+    {
+        "label": "regex_emoji",
+        "kind": 5,
+        "importPath": "plugins.emoji.update_emoji",
+        "description": "plugins.emoji.update_emoji",
+        "peekOfCode": "regex_emoji = r\"^([\\w ].*?\\S)\\s*;\\s*([\\w-]+)\\s*#\\s*(.*?)\\s(\\S.*).*$\"\n# regex_group returns the group of subgroup that a line opens\nregex_group = r\"^#\\s*(group|subgroup):\\s*(.*)$\"\nheaders = \"\"\"\n# emoji-char-definitions.zsh - Emoji definitions for oh-my-zsh emoji plugin\n#\n# This file is auto-generated by update_emoji.py. Do not edit it manually.\n#\n# This contains the definition for:\n#   $emoji         - which maps character names to Unicode characters",
+        "detail": "plugins.emoji.update_emoji",
+        "documentation": {}
+    },
+    {
+        "label": "regex_group",
+        "kind": 5,
+        "importPath": "plugins.emoji.update_emoji",
+        "description": "plugins.emoji.update_emoji",
+        "peekOfCode": "regex_group = r\"^#\\s*(group|subgroup):\\s*(.*)$\"\nheaders = \"\"\"\n# emoji-char-definitions.zsh - Emoji definitions for oh-my-zsh emoji plugin\n#\n# This file is auto-generated by update_emoji.py. Do not edit it manually.\n#\n# This contains the definition for:\n#   $emoji         - which maps character names to Unicode characters\n#   $emoji_flags   - maps country names to Unicode flag characters using region\n#                    indicators",
+        "detail": "plugins.emoji.update_emoji",
+        "documentation": {}
+    },
+    {
+        "label": "headers",
+        "kind": 5,
+        "importPath": "plugins.emoji.update_emoji",
+        "description": "plugins.emoji.update_emoji",
+        "peekOfCode": "headers = \"\"\"\n# emoji-char-definitions.zsh - Emoji definitions for oh-my-zsh emoji plugin\n#\n# This file is auto-generated by update_emoji.py. Do not edit it manually.\n#\n# This contains the definition for:\n#   $emoji         - which maps character names to Unicode characters\n#   $emoji_flags   - maps country names to Unicode flag characters using region\n#                    indicators\n#   $emoji_mod     - maps modifier components to Unicode characters",
+        "detail": "plugins.emoji.update_emoji",
+        "documentation": {}
+    },
+    {
+        "label": "emoji_database",
+        "kind": 5,
+        "importPath": "plugins.emoji.update_emoji",
+        "description": "plugins.emoji.update_emoji",
+        "peekOfCode": "emoji_database = []\nfor line in spec:\n    # First, test if this line opens a group or subgroup\n    group_match = re.findall(regex_group, line)\n    if group_match != []:\n        gr_or_sub, name = group_match[0]\n        if gr_or_sub == \"group\":\n            group = name\n        elif gr_or_sub == \"subgroup\":\n            subgroup = name",
+        "detail": "plugins.emoji.update_emoji",
+        "documentation": {}
+    },
+    {
+        "label": "gemoji_db",
+        "kind": 5,
+        "importPath": "plugins.emoji.update_emoji",
+        "description": "plugins.emoji.update_emoji",
+        "peekOfCode": "gemoji_db = open(\"gemoji_db.json\")\nj = json.load(gemoji_db)\naliases_map = {entry['emoji']: entry['aliases'] for entry in j}\nall_omz_names = [emoji_data[3] for emoji_data in emoji_database]\n# Let's begin writing to this file\noutput = open(\"emoji-char-definitions.zsh\", \"w\")\noutput.write(headers)\nemoji_groups = {\"fruits\": \"\\n\", \"vehicles\": \"\\n\", \"hands\": \"\\n\",\n                \"people\": \"\\n\", \"animals\": \"\\n\", \"faces\": \"\\n\",\n                \"flags\": \"\\n\"}",
+        "detail": "plugins.emoji.update_emoji",
+        "documentation": {}
+    },
+    {
+        "label": "j",
+        "kind": 5,
+        "importPath": "plugins.emoji.update_emoji",
+        "description": "plugins.emoji.update_emoji",
+        "peekOfCode": "j = json.load(gemoji_db)\naliases_map = {entry['emoji']: entry['aliases'] for entry in j}\nall_omz_names = [emoji_data[3] for emoji_data in emoji_database]\n# Let's begin writing to this file\noutput = open(\"emoji-char-definitions.zsh\", \"w\")\noutput.write(headers)\nemoji_groups = {\"fruits\": \"\\n\", \"vehicles\": \"\\n\", \"hands\": \"\\n\",\n                \"people\": \"\\n\", \"animals\": \"\\n\", \"faces\": \"\\n\",\n                \"flags\": \"\\n\"}\n# First, write every emoji down",
+        "detail": "plugins.emoji.update_emoji",
+        "documentation": {}
+    },
+    {
+        "label": "aliases_map",
+        "kind": 5,
+        "importPath": "plugins.emoji.update_emoji",
+        "description": "plugins.emoji.update_emoji",
+        "peekOfCode": "aliases_map = {entry['emoji']: entry['aliases'] for entry in j}\nall_omz_names = [emoji_data[3] for emoji_data in emoji_database]\n# Let's begin writing to this file\noutput = open(\"emoji-char-definitions.zsh\", \"w\")\noutput.write(headers)\nemoji_groups = {\"fruits\": \"\\n\", \"vehicles\": \"\\n\", \"hands\": \"\\n\",\n                \"people\": \"\\n\", \"animals\": \"\\n\", \"faces\": \"\\n\",\n                \"flags\": \"\\n\"}\n# First, write every emoji down\nfor _omz_codes, _status, _emoji, _omz_name, _group, _subgroup in emoji_database:",
+        "detail": "plugins.emoji.update_emoji",
+        "documentation": {}
+    },
+    {
+        "label": "all_omz_names",
+        "kind": 5,
+        "importPath": "plugins.emoji.update_emoji",
+        "description": "plugins.emoji.update_emoji",
+        "peekOfCode": "all_omz_names = [emoji_data[3] for emoji_data in emoji_database]\n# Let's begin writing to this file\noutput = open(\"emoji-char-definitions.zsh\", \"w\")\noutput.write(headers)\nemoji_groups = {\"fruits\": \"\\n\", \"vehicles\": \"\\n\", \"hands\": \"\\n\",\n                \"people\": \"\\n\", \"animals\": \"\\n\", \"faces\": \"\\n\",\n                \"flags\": \"\\n\"}\n# First, write every emoji down\nfor _omz_codes, _status, _emoji, _omz_name, _group, _subgroup in emoji_database:\n    # One emoji can be mapped to multiple names (aliases or country codes)",
+        "detail": "plugins.emoji.update_emoji",
+        "documentation": {}
+    },
+    {
+        "label": "output",
+        "kind": 5,
+        "importPath": "plugins.emoji.update_emoji",
+        "description": "plugins.emoji.update_emoji",
+        "peekOfCode": "output = open(\"emoji-char-definitions.zsh\", \"w\")\noutput.write(headers)\nemoji_groups = {\"fruits\": \"\\n\", \"vehicles\": \"\\n\", \"hands\": \"\\n\",\n                \"people\": \"\\n\", \"animals\": \"\\n\", \"faces\": \"\\n\",\n                \"flags\": \"\\n\"}\n# First, write every emoji down\nfor _omz_codes, _status, _emoji, _omz_name, _group, _subgroup in emoji_database:\n    # One emoji can be mapped to multiple names (aliases or country codes)\n    names_for_this_emoji = [_omz_name]\n    # Variable that indicates in which map the emoji will be located",
+        "detail": "plugins.emoji.update_emoji",
+        "documentation": {}
+    },
+    {
+        "label": "emoji_groups",
+        "kind": 5,
+        "importPath": "plugins.emoji.update_emoji",
+        "description": "plugins.emoji.update_emoji",
+        "peekOfCode": "emoji_groups = {\"fruits\": \"\\n\", \"vehicles\": \"\\n\", \"hands\": \"\\n\",\n                \"people\": \"\\n\", \"animals\": \"\\n\", \"faces\": \"\\n\",\n                \"flags\": \"\\n\"}\n# First, write every emoji down\nfor _omz_codes, _status, _emoji, _omz_name, _group, _subgroup in emoji_database:\n    # One emoji can be mapped to multiple names (aliases or country codes)\n    names_for_this_emoji = [_omz_name]\n    # Variable that indicates in which map the emoji will be located\n    emoji_map = \"emoji\"\n    if _status == \"component\":",
+        "detail": "plugins.emoji.update_emoji",
+        "documentation": {}
+    },
+    {
+        "label": "get_tagname_or_hash",
+        "kind": 2,
+        "importPath": "plugins.git-prompt.gitstatus",
+        "description": "plugins.git-prompt.gitstatus",
+        "peekOfCode": "def get_tagname_or_hash():\n    \"\"\"return tagname if exists else hash\"\"\"\n    # get hash\n    hash_cmd = ['git', 'rev-parse', '--short', 'HEAD']\n    hash_ = check_output(hash_cmd).decode('utf-8').strip()\n    # get tagname\n    tags_cmd = ['git', 'for-each-ref', '--points-at=HEAD', '--count=2', '--sort=-version:refname', '--format=%(refname:short)', 'refs/tags']\n    tags = check_output(tags_cmd).decode('utf-8').split()\n    if tags:\n        return tags[0] + ('+' if len(tags) > 1 else '')",
+        "detail": "plugins.git-prompt.gitstatus",
+        "documentation": {}
+    },
+    {
+        "label": "get_stash",
+        "kind": 2,
+        "importPath": "plugins.git-prompt.gitstatus",
+        "description": "plugins.git-prompt.gitstatus",
+        "peekOfCode": "def get_stash():\n    cmd = Popen(['git', 'rev-parse', '--git-dir'], stdout=PIPE, stderr=PIPE)\n    so, se = cmd.communicate()\n    stash_file = '%s%s' % (so.decode('utf-8').rstrip(), '/logs/refs/stash')\n    try:\n        with open(stash_file) as f:\n            return sum(1 for _ in f)\n    except IOError:\n        return 0\n# `git status --porcelain --branch` can collect all information",
+        "detail": "plugins.git-prompt.gitstatus",
+        "documentation": {}
+    },
+    {
+        "label": "po",
+        "kind": 5,
+        "importPath": "plugins.git-prompt.gitstatus",
+        "description": "plugins.git-prompt.gitstatus",
+        "peekOfCode": "po = Popen(['git', 'status', '--porcelain', '--branch'], env=dict(os.environ, LANG=\"C\"), stdout=PIPE, stderr=PIPE)\nstdout, sterr = po.communicate()\nif po.returncode != 0:\n    sys.exit(0)  # Not a git repository\n# collect git status information\nuntracked, staged, changed, conflicts = [], [], [], []\nahead, behind = 0, 0\nstatus = [(line[0], line[1], line[2:]) for line in stdout.decode('utf-8').splitlines()]\nfor st in status:\n    if st[0] == '#' and st[1] == '#':",
+        "detail": "plugins.git-prompt.gitstatus",
+        "documentation": {}
+    },
+    {
+        "label": "status",
+        "kind": 5,
+        "importPath": "plugins.git-prompt.gitstatus",
+        "description": "plugins.git-prompt.gitstatus",
+        "peekOfCode": "status = [(line[0], line[1], line[2:]) for line in stdout.decode('utf-8').splitlines()]\nfor st in status:\n    if st[0] == '#' and st[1] == '#':\n        if re.search('Initial commit on', st[2]) or re.search('No commits yet on', st[2]):\n            branch = st[2].split(' ')[-1]\n        elif re.search('no branch', st[2]):  # detached status\n            branch = get_tagname_or_hash()\n        elif len(st[2].strip().split('...')) == 1:\n            branch = st[2].strip()\n        else:",
+        "detail": "plugins.git-prompt.gitstatus",
+        "documentation": {}
+    },
+    {
+        "label": "stashed",
+        "kind": 5,
+        "importPath": "plugins.git-prompt.gitstatus",
+        "description": "plugins.git-prompt.gitstatus",
+        "peekOfCode": "stashed = get_stash()\nif not changed and not staged and not conflicts and not untracked:\n    clean = 1\nelse:\n    clean = 0\nout = ' '.join([\n    branch,\n    str(ahead),\n    str(behind),\n    str(len(staged)),",
+        "detail": "plugins.git-prompt.gitstatus",
+        "documentation": {}
+    },
+    {
+        "label": "out",
+        "kind": 5,
+        "importPath": "plugins.git-prompt.gitstatus",
+        "description": "plugins.git-prompt.gitstatus",
+        "peekOfCode": "out = ' '.join([\n    branch,\n    str(ahead),\n    str(behind),\n    str(len(staged)),\n    str(len(conflicts)),\n    str(len(changed)),\n    str(len(untracked)),\n    str(stashed),\n    str(clean)",
+        "detail": "plugins.git-prompt.gitstatus",
+        "documentation": {}
+    },
+    {
+        "label": "CommandSet",
+        "kind": 6,
+        "importPath": "plugins.shell-proxy.proxy",
+        "description": "plugins.shell-proxy.proxy",
+        "peekOfCode": "class CommandSet:\n    proxies = make_proxies(get_http_proxy())\n    aliases = {\n        _: \"env __SSH_PROGRAM_NAME__=%s %s\" % (_, ssh_agent)\n        for _ in (\"ssh\", \"sftp\", \"scp\", \"slogin\", \"ssh-copy-id\")\n    }\n    def enable(self):\n        cmdline(\"export\", *merge(self.proxies))\n        cmdline(\"alias\", *merge(self.aliases))\n    def disable(self):",
+        "detail": "plugins.shell-proxy.proxy",
+        "documentation": {}
+    },
+    {
+        "label": "get_http_proxy",
+        "kind": 2,
+        "importPath": "plugins.shell-proxy.proxy",
+        "description": "plugins.shell-proxy.proxy",
+        "peekOfCode": "def get_http_proxy():\n    default_proxy = os.environ.get(proxy_env)\n    if default_proxy:\n        return default_proxy\n    if os.path.isfile(proxy_config):\n        return check_output(proxy_config).decode(\"utf-8\").strip()\n    print(usage, file=sys.stderr)\n    sys.exit(1)\ndef make_proxies(url: str):\n    proxies = {\"%s_PROXY\" % _: url for _ in (\"HTTP\", \"HTTPS\", \"FTP\", \"RSYNC\", \"ALL\")}",
+        "detail": "plugins.shell-proxy.proxy",
+        "documentation": {}
+    },
+    {
+        "label": "make_proxies",
+        "kind": 2,
+        "importPath": "plugins.shell-proxy.proxy",
+        "description": "plugins.shell-proxy.proxy",
+        "peekOfCode": "def make_proxies(url: str):\n    proxies = {\"%s_PROXY\" % _: url for _ in (\"HTTP\", \"HTTPS\", \"FTP\", \"RSYNC\", \"ALL\")}\n    proxies.update({name.lower(): value for (name, value) in proxies.items()})\n    proxies[\"GIT_SSH\"] = ssh_agent\n    return proxies\ndef merge(mapping: dict):\n    return (\"%s=%s\" % _ for _ in mapping.items())\nclass CommandSet:\n    proxies = make_proxies(get_http_proxy())\n    aliases = {",
+        "detail": "plugins.shell-proxy.proxy",
+        "documentation": {}
+    },
+    {
+        "label": "merge",
+        "kind": 2,
+        "importPath": "plugins.shell-proxy.proxy",
+        "description": "plugins.shell-proxy.proxy",
+        "peekOfCode": "def merge(mapping: dict):\n    return (\"%s=%s\" % _ for _ in mapping.items())\nclass CommandSet:\n    proxies = make_proxies(get_http_proxy())\n    aliases = {\n        _: \"env __SSH_PROGRAM_NAME__=%s %s\" % (_, ssh_agent)\n        for _ in (\"ssh\", \"sftp\", \"scp\", \"slogin\", \"ssh-copy-id\")\n    }\n    def enable(self):\n        cmdline(\"export\", *merge(self.proxies))",
+        "detail": "plugins.shell-proxy.proxy",
+        "documentation": {}
+    },
+    {
+        "label": "cmdline",
+        "kind": 2,
+        "importPath": "plugins.shell-proxy.proxy",
+        "description": "plugins.shell-proxy.proxy",
+        "peekOfCode": "def cmdline(*items):\n    print(list2cmdline(items))\ndef main():\n    command = CommandSet()\n    if len(sys.argv) == 1:\n        command.usage()\n        sys.exit(1)\n    getattr(command, sys.argv[1], command.usage)()\nif __name__ == \"__main__\":\n    main()",
+        "detail": "plugins.shell-proxy.proxy",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "plugins.shell-proxy.proxy",
+        "description": "plugins.shell-proxy.proxy",
+        "peekOfCode": "def main():\n    command = CommandSet()\n    if len(sys.argv) == 1:\n        command.usage()\n        sys.exit(1)\n    getattr(command, sys.argv[1], command.usage)()\nif __name__ == \"__main__\":\n    main()",
+        "detail": "plugins.shell-proxy.proxy",
+        "documentation": {}
+    },
+    {
+        "label": "cwd",
+        "kind": 5,
+        "importPath": "plugins.shell-proxy.proxy",
+        "description": "plugins.shell-proxy.proxy",
+        "peekOfCode": "cwd = os.path.dirname(__file__)\nssh_agent = os.path.join(cwd, \"ssh-agent.py\")\nproxy_env = \"SHELLPROXY_URL\"\nproxy_config = os.environ.get(\"SHELLPROXY_CONFIG\") or os.path.expandvars(\"$HOME/.config/proxy\")\nusage=\"\"\"shell-proxy: no proxy configuration found.\nSet `{env}` or create a config file at `{config}`\nSee the plugin README for more information.\"\"\".format(env=proxy_env, config=proxy_config)\ndef get_http_proxy():\n    default_proxy = os.environ.get(proxy_env)\n    if default_proxy:",
+        "detail": "plugins.shell-proxy.proxy",
+        "documentation": {}
+    },
+    {
+        "label": "ssh_agent",
+        "kind": 5,
+        "importPath": "plugins.shell-proxy.proxy",
+        "description": "plugins.shell-proxy.proxy",
+        "peekOfCode": "ssh_agent = os.path.join(cwd, \"ssh-agent.py\")\nproxy_env = \"SHELLPROXY_URL\"\nproxy_config = os.environ.get(\"SHELLPROXY_CONFIG\") or os.path.expandvars(\"$HOME/.config/proxy\")\nusage=\"\"\"shell-proxy: no proxy configuration found.\nSet `{env}` or create a config file at `{config}`\nSee the plugin README for more information.\"\"\".format(env=proxy_env, config=proxy_config)\ndef get_http_proxy():\n    default_proxy = os.environ.get(proxy_env)\n    if default_proxy:\n        return default_proxy",
+        "detail": "plugins.shell-proxy.proxy",
+        "documentation": {}
+    },
+    {
+        "label": "proxy_env",
+        "kind": 5,
+        "importPath": "plugins.shell-proxy.proxy",
+        "description": "plugins.shell-proxy.proxy",
+        "peekOfCode": "proxy_env = \"SHELLPROXY_URL\"\nproxy_config = os.environ.get(\"SHELLPROXY_CONFIG\") or os.path.expandvars(\"$HOME/.config/proxy\")\nusage=\"\"\"shell-proxy: no proxy configuration found.\nSet `{env}` or create a config file at `{config}`\nSee the plugin README for more information.\"\"\".format(env=proxy_env, config=proxy_config)\ndef get_http_proxy():\n    default_proxy = os.environ.get(proxy_env)\n    if default_proxy:\n        return default_proxy\n    if os.path.isfile(proxy_config):",
+        "detail": "plugins.shell-proxy.proxy",
+        "documentation": {}
+    },
+    {
+        "label": "proxy_config",
+        "kind": 5,
+        "importPath": "plugins.shell-proxy.proxy",
+        "description": "plugins.shell-proxy.proxy",
+        "peekOfCode": "proxy_config = os.environ.get(\"SHELLPROXY_CONFIG\") or os.path.expandvars(\"$HOME/.config/proxy\")\nusage=\"\"\"shell-proxy: no proxy configuration found.\nSet `{env}` or create a config file at `{config}`\nSee the plugin README for more information.\"\"\".format(env=proxy_env, config=proxy_config)\ndef get_http_proxy():\n    default_proxy = os.environ.get(proxy_env)\n    if default_proxy:\n        return default_proxy\n    if os.path.isfile(proxy_config):\n        return check_output(proxy_config).decode(\"utf-8\").strip()",
+        "detail": "plugins.shell-proxy.proxy",
+        "documentation": {}
+    },
+    {
+        "label": "ssh_proxy",
+        "kind": 5,
+        "importPath": "plugins.shell-proxy.ssh-agent",
+        "description": "plugins.shell-proxy.ssh-agent",
+        "peekOfCode": "ssh_proxy = os.path.join(os.path.dirname(__file__), \"ssh-proxy.py\")\nargv = [\n    os.environ.get(\"__SSH_PROGRAM_NAME__\", \"ssh\"),\n    \"-o\",\n    \"ProxyCommand={} %h %p\".format(ssh_proxy),\n    \"-o\",\n    \"Compression=yes\",\n]\nsubprocess.call(argv + sys.argv[1:], env=os.environ)",
+        "detail": "plugins.shell-proxy.ssh-agent",
+        "documentation": {}
+    },
+    {
+        "label": "argv",
+        "kind": 5,
+        "importPath": "plugins.shell-proxy.ssh-agent",
+        "description": "plugins.shell-proxy.ssh-agent",
+        "peekOfCode": "argv = [\n    os.environ.get(\"__SSH_PROGRAM_NAME__\", \"ssh\"),\n    \"-o\",\n    \"ProxyCommand={} %h %p\".format(ssh_proxy),\n    \"-o\",\n    \"Compression=yes\",\n]\nsubprocess.call(argv + sys.argv[1:], env=os.environ)",
+        "detail": "plugins.shell-proxy.ssh-agent",
+        "documentation": {}
+    },
+    {
+        "label": "make_argv",
+        "kind": 2,
+        "importPath": "plugins.shell-proxy.ssh-proxy",
+        "description": "plugins.shell-proxy.ssh-proxy",
+        "peekOfCode": "def make_argv():\n    yield \"nc\"\n    if sys.platform == 'linux':\n        # caveats: macOS built-in netcat command not supported proxy-type\n        yield \"-X\" # --proxy-type\n        # Supported protocols are 4 (SOCKS v4), 5 (SOCKS v5) and connect (HTTP proxy).\n        # Default SOCKS v5 is used.\n        yield proxy_protocols[parsed.scheme]\n    yield \"-x\" # --proxy\n    yield parsed.netloc # proxy-host:proxy-port",
+        "detail": "plugins.shell-proxy.ssh-proxy",
+        "documentation": {}
+    },
+    {
+        "label": "proxy",
+        "kind": 5,
+        "importPath": "plugins.shell-proxy.ssh-proxy",
+        "description": "plugins.shell-proxy.ssh-proxy",
+        "peekOfCode": "proxy = next(os.environ[_] for _ in (\"HTTP_PROXY\", \"HTTPS_PROXY\") if _ in os.environ)\nparsed = urlparse(proxy)\nproxy_protocols = {\n    \"http\": \"connect\",\n    \"https\": \"connect\",\n    \"socks\": \"5\",\n    \"socks5\": \"5\",\n    \"socks4\": \"4\",\n    \"socks4a\": \"4\",\n}",
+        "detail": "plugins.shell-proxy.ssh-proxy",
+        "documentation": {}
+    },
+    {
+        "label": "parsed",
+        "kind": 5,
+        "importPath": "plugins.shell-proxy.ssh-proxy",
+        "description": "plugins.shell-proxy.ssh-proxy",
+        "peekOfCode": "parsed = urlparse(proxy)\nproxy_protocols = {\n    \"http\": \"connect\",\n    \"https\": \"connect\",\n    \"socks\": \"5\",\n    \"socks5\": \"5\",\n    \"socks4\": \"4\",\n    \"socks4a\": \"4\",\n}\nif parsed.scheme not in proxy_protocols:",
+        "detail": "plugins.shell-proxy.ssh-proxy",
+        "documentation": {}
+    },
+    {
+        "label": "proxy_protocols",
+        "kind": 5,
+        "importPath": "plugins.shell-proxy.ssh-proxy",
+        "description": "plugins.shell-proxy.ssh-proxy",
+        "peekOfCode": "proxy_protocols = {\n    \"http\": \"connect\",\n    \"https\": \"connect\",\n    \"socks\": \"5\",\n    \"socks5\": \"5\",\n    \"socks4\": \"4\",\n    \"socks4a\": \"4\",\n}\nif parsed.scheme not in proxy_protocols:\n    raise TypeError('unsupported proxy protocol: \"{}\"'.format(parsed.scheme))",
+        "detail": "plugins.shell-proxy.ssh-proxy",
+        "documentation": {}
+    }
+]
